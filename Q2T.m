@@ -1,4 +1,4 @@
-function T = Q2T(theta,d,lambda,Q)
+function T = Q2T(d,theta,lambda,Q)
 % Q to T: from order quantity to order cycle
 % input parameter:
 % theta: deteriorating rate
@@ -20,3 +20,4 @@ else
     T=par2/par;
 end
 
+end

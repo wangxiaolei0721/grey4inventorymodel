@@ -5,8 +5,8 @@ close all;
 %% model setting
 % equation parameter
 d=12;
-theta=0.03;
-lambda=0.05;
+theta=0.01;
+lambda=0.02;
 % lambdaeqtheta:lambda=theta, 1 is TRUE, 0 is FALSE
 lambdaeqtheta=0;
 % the order quantity
@@ -16,16 +16,17 @@ time0=0;
 % the time resolution
 delta_t=1;
 % generate the trajectory of inventory levels
-[time_true1,trajectory_true1] = trajectory(theta,d,lambda,time0,delta_t,Q_order(1));
-[time_true2,trajectory_true2] = trajectory(theta,d,lambda,time0,delta_t,Q_order(2));
-[time_true3,trajectory_true3] = trajectory(theta,d,lambda,time0,delta_t,Q_order(3));
-[time_true4,trajectory_true4] = trajectory(theta,d,lambda,time0,delta_t,Q_order(4));
+[time_true1,trajectory_true1] = trajectory(d,theta,lambda,time0,delta_t,Q_order(1));
+[time_true2,trajectory_true2] = trajectory(d,theta,lambda,time0,delta_t,Q_order(2));
+[time_true3,trajectory_true3] = trajectory(d,theta,lambda,time0,delta_t,Q_order(3));
+[time_true4,trajectory_true4] = trajectory(d,theta,lambda,time0,delta_t,Q_order(4));
 % produce simulated trajectory
-rng(1); % 1
-[time_simu1,trajectory_simu1] = trajectory_simulation(theta,d,lambda,time0,delta_t,Q_order(1));
-[time_simu2,trajectory_simu2] = trajectory_simulation(theta,d,lambda,time0,delta_t,Q_order(2));
-[time_simu3,trajectory_simu3] = trajectory_simulation(theta,d,lambda,time0,delta_t,Q_order(3));
-[time_simu4,trajectory_simu4] = trajectory_simulation(theta,d,lambda,time0,delta_t,Q_order(4));
+rng(7); % 1
+[time_simu1,trajectory_simu1] = trajectory_simulation(d,theta,lambda,time0,delta_t,Q_order(1));
+[time_simu2,trajectory_simu2] = trajectory_simulation(d,theta,lambda,time0,delta_t,Q_order(2));
+[time_simu3,trajectory_simu3] = trajectory_simulation(d,theta,lambda,time0,delta_t,Q_order(3));
+[time_simu4,trajectory_simu4] = trajectory_simulation(d,theta,lambda,time0,delta_t,Q_order(4));
+%% smoothing
 %% smoothing
 % smooth interval
 rangeval1=[time_simu1(1),time_simu1(end)];
@@ -68,9 +69,9 @@ nexttile
 plot(time_true1,trajectory_true1,'LineWidth',1)
 hold on
 % plot simulated time vs simulated level
-plot(time_simu1,trajectory_simu1,'LineWidth',1.5)
+plot(time_simu1,trajectory_simu1,'LineWidth',1,'LineStyle','--','Color',[191, 0, 191]/255)
 % plot smoothed time vs smoothed level
-plot(time_simu1,trajectory_smooth1,'Color',[0 191 191]/255,'LineStyle','--','LineWidth',2.5)
+plot(time_simu1,trajectory_smooth1,'Color',[217, 83, 25]/255,'LineStyle','-','LineWidth',1.5)
 xlabel({'Hour'},'FontSize',14)
 ylabel(['Inventory level'],'FontSize',14)
 title({'(a) Q=400'},'FontSize',16)
@@ -81,9 +82,9 @@ nexttile
 plot(time_true2,trajectory_true2,'LineWidth',1)
 hold on
 % plot simulated time vs simulated level
-plot(time_simu2,trajectory_simu2,'LineWidth',1.5)
+plot(time_simu2,trajectory_simu2,'LineWidth',1,'LineStyle','--','Color',[191, 0, 191]/255)
 % plot smoothed time vs smoothed level
-plot(time_simu2,trajectory_smooth2,'Color',[0 191 191]/255,'LineStyle','--','LineWidth',2.5)
+plot(time_simu2,trajectory_smooth2,'Color',[217, 83, 25]/255,'LineStyle','-','LineWidth',1)
 xlabel({'Hour'},'FontSize',14)
 ylabel(['Inventory level'],'FontSize',14)
 title({'(b) Q=320'},'FontSize',16)
@@ -94,9 +95,9 @@ nexttile
 plot(time_true3,trajectory_true3,'LineWidth',1)
 hold on
 % plot simulated time vs simulated level
-plot(time_simu3,trajectory_simu3,'LineWidth',1.5)
+plot(time_simu3,trajectory_simu3,'LineWidth',1,'LineStyle','--','Color',[191, 0, 191]/255)
 % plot smoothed time vs smoothed level
-plot(time_simu3,trajectory_smooth3,'Color',[0 191 191]/255,'LineStyle','--','LineWidth',2.5)
+plot(time_simu3,trajectory_smooth3,'Color',[217, 83, 25]/255,'LineStyle','-','LineWidth',1)
 xlabel({'Hour'},'FontSize',14)
 ylabel(['Inventory level'],'FontSize',14)
 title({'(c) Q=280'},'FontSize',16)
@@ -107,16 +108,18 @@ nexttile
 plot(time_true4,trajectory_true4,'LineWidth',1)
 hold on
 % plot simulated time vs simulated level
-plot(time_simu4,trajectory_simu4,'LineWidth',1.5)
+plot(time_simu4,trajectory_simu4,'LineWidth',1,'LineStyle','--','Color',[191, 0, 191]/255)
 % plot smoothed time vs smoothed level
-plot(time_simu4,trajectory_smooth4,'Color',[0 191 191]/255,'LineStyle','--','LineWidth',2.5)
+plot(time_simu4,trajectory_smooth4,'Color',[217, 83, 25]/255,'LineStyle','-','LineWidth',1)
 xlabel({'Hour'},'FontSize',14)
 ylabel(['Inventory level'],'FontSize',14)
 title({'(d) Q=360'},'FontSize',16)
 set(gca,'FontName','Book Antiqua','FontSize',12) % ,'Xlim',[-0.5,7.5],'Ylim',[0,850]
 legend(["Standard level","Simulated level","Smoothed level"],'location','northeast','FontSize',10,'NumColumns',1)
 % save figure
-savefig(gcf,'.\figure\case2_simulation_level.fig')
+% save figure
+savefig(gcf,'.\figure\case2_simulation_level.fig');
+exportgraphics(gcf,'.\figure\case2_simulation_level.pdf')
 %% estimation
 % simulated time 1,2,3 for parameter estimation
 time_simu={time_simu1,time_simu2,time_simu3};
@@ -214,92 +217,57 @@ set(gca,'FontName','Book Antiqua','FontSize',12) % ,'Xlim',[-0.5,7.5],'Ylim',[0,
 legend(["Smoothed derivative","Fitted derivative"],'location','southeast','FontSize',8,'NumColumns',1)
 % save figure
 savefig(gcf,'.\figure\case2_fitted_derivative.fig')
-% level plot
-figure('unit','centimeters','position',[5,5,15,10],'PaperPosition',[5,5,15,10],'PaperSize',[15,10])
-[time_estimate4,trajectory_smooth_estimate4]=trajectory(theta_estimate,d_estimate,lambda_estimate,time0,delta_t,Q_order(4));
-plot(time_true4,trajectory_true4,'LineStyle','--','LineWidth',1)
+exportgraphics(gcf,'.\figure\case2_fitted_derivative.pdf')
+%% level plot
+figure('unit','centimeters','position',[5,5,30,20],'PaperPosition',[5,5,30,20],'PaperSize',[30,20])
+tiledlayout(2,2,'Padding','Compact');
+nexttile
+[time_estimate1,trajectory_smooth_estimate1]=trajectory(d_estimate,theta_estimate,lambda_estimate,time0,delta_t,Q_order(1));
+plot(time_true1,trajectory_true1,'LineStyle','-','LineWidth',1)
 hold on
-plot(time_simu4,trajectory_simu4,'LineStyle','--','LineWidth',1.5)
-plot(time_simu4,trajectory_smooth4,'LineStyle','--','LineWidth',1.5)
-plot(time_estimate4,trajectory_smooth_estimate4,'LineStyle','--','LineWidth',1.5)
+plot(time_estimate1,trajectory_smooth_estimate1,'LineStyle','-','LineWidth',1.5)
 xlabel({'Hour'},'FontSize',14)
 ylabel(['Inventory level'],'FontSize',14)
 title({'Order quantity Q=360'},'FontSize',16)
 set(gca,'FontName','Book Antiqua','FontSize',12) % ,'Xlim',[-0.5,7.5],'Ylim',[0,850]
-legend(["Standard level","Simulated level","Smoothed level","Estimated level"],'location','northeast','FontSize',8,'NumColumns',1)
-% save(".\data\parameter.mat","lambda_estimate","theta_estimate","d_estimate")
-%% optimization
-% economic parameter
-p=6.0;
-c=4.0;
-h=0.02;
-% order cycle to be evaluated
-T_eval = [1:0.1:60];
-% profit corresponding to simulated parameters
-profit_true = profit(theta,d,lambda,p,c,h,T_eval);
-% optimal order cycle corresponding to simulated parameters
-T_true_optimal = optimal_cycle(theta,p,c,h);
-% optimal order quantity corresponding to estimated parameters
-Q_true_optimal=T2Q(theta,d,lambda,T_true_optimal);
-% optimal profit corresponding to simulated parameters
-profit_true_optimal = profit(theta,d,lambda,p,c,h,T_true_optimal);
-% profit corresponding to estimated parameters
-profit_estimate = profit(theta_estimate,d_estimate,lambda_estimate,p,c,h,T_eval);
-% optimal order cycle corresponding to estimated parameters
-T_estimate_optimal = optimal_cycle(theta_estimate,p,c,h);
-% optimal order quantity corresponding to estimated parameters
-Q_estimate_optimal=T2Q(theta_estimate,d_estimate,lambda_estimate,T_estimate_optimal);
-% optimal profit corresponding to estimated parameters
-profit_estimate_optimal = profit(theta_estimate,d_estimate,lambda_estimate,p,c,h,T_estimate_optimal);
-figure('unit','centimeters','position',[5,5,30,10],'PaperPosition',[5,5,30,10],'PaperSize',[30,10])
-tiledlayout(1,3,'Padding','Compact');
-nexttile
-% plot T vs profit
-plot(T_eval,profit_true,'LineStyle','-','LineWidth',1.5,'Color',[0, 114, 189]/255)
-hold on
-plot(T_true_optimal,profit_true_optimal,'LineStyle','none','Color',[0, 114, 189]/255,'Marker','*','MarkerSize',8,'LineWidth',1)
-plot(T_eval,profit_estimate,'LineStyle','-','LineWidth',1.5,'Color',[0.8500 0.3250 0.0980])
-plot(T_estimate_optimal,profit_estimate_optimal,'LineStyle','none','Color',[0.8500 0.3250 0.0980],'Marker','*','MarkerSize',8,'LineWidth',1)
-xlabel({'Hour'},'FontSize',14)
-ylabel(['Profit'],'FontSize',14)
-title({'(a) Profit'},'FontSize',16)
-set(gca,'FontName','Book Antiqua','FontSize',12) % ,'Xlim',[-0.5,7.5],'Ylim',[0,850]
-legend(["Profit based on simulation parameters","Optimal order quantity for simulation parameters","Profit based on estimated parameters","Optimal order quantity for estimated parameters"],'location','southwest','FontSize',6,'NumColumns',1)
-% derivative of profit corresponding to simulated parameters
-profit_der_true = profit_derivative(theta,d,lambda,p,c,h,T_eval);
-% derivative of profit corresponding to optimal order cycle
-profit_der_true_optimal = profit_derivative(theta,d,lambda,p,c,h,T_true_optimal);
-% derivative of profit corresponding to estimated parameters
-profit_der_estimate = profit_derivative(theta_estimate,d_estimate,lambda_estimate,p,c,h,T_eval);
-% derivative of profit corresponding to optimal order cycle
-profit_der_estimate_optimal = profit_derivative(theta_estimate,d_estimate,lambda_estimate,p,c,h,T_estimate_optimal);
-nexttile
-% plot T vs first derivative of profit
-plot(T_eval,profit_der_true,'LineStyle','-','LineWidth',1.5)
-hold on
-plot(T_true_optimal,profit_der_true_optimal,'LineStyle','none','Color',[0, 114, 189]/255,'Marker','*','MarkerSize',8,'LineWidth',1)
-plot(T_eval,profit_der_estimate,'LineStyle','-','LineWidth',1.5,'Color',[0.8500 0.3250 0.0980])
-plot(T_estimate_optimal,profit_der_estimate_optimal,'LineStyle','none','Color',[0.8500 0.3250 0.0980],'Marker','*','MarkerSize',8,'LineWidth',1)
-xlabel({'Hour'},'FontSize',14)
-ylabel(['First derivative of profit'],'FontSize',14)
-title({'(b) First derivative of profit'},'FontSize',16)
-set(gca,'FontName','Book Antiqua','FontSize',12) % ,'Xlim',[-0.5,7.5],'Ylim',[0,850]
+legend(["Standard level","Estimated level"],'location','northeast','FontSize',8,'NumColumns',1)
 %
-% second derivative of profit corresponding to simulated parameters
-profit_der2_true = profit_derivative2(theta,d,lambda,p,c,h,T_eval);
-% second derivative of profit corresponding to estimated parameters
-profit_der2_estimate = profit_derivative2(theta_estimate,d_estimate,lambda_estimate,p,c,h,T_eval);
 nexttile
-% plot T vs second derivative of profit
-plot(T_eval,profit_der2_true,'LineStyle','-','LineWidth',1.5,'Color',[0, 114, 189]/255)
+[time_estimate2,trajectory_smooth_estimate2]=trajectory(d_estimate,theta_estimate,lambda_estimate,time0,delta_t,Q_order(2));
+plot(time_true2,trajectory_true2,'LineStyle','-','LineWidth',1)
 hold on
-plot(T_eval,profit_der2_estimate,'LineStyle','-','LineWidth',1.5,'Color',[0.8500 0.3250 0.0980])
-yline(0,"--")
+plot(time_estimate2,trajectory_smooth_estimate2,'LineStyle','-','LineWidth',1.5)
 xlabel({'Hour'},'FontSize',14)
-ylabel(['Second derivative of Profit'],'FontSize',14)
-title({'(c) Second derivative of profit'},'FontSize',16)
+ylabel(['Inventory level'],'FontSize',14)
+title({'Order quantity Q=360'},'FontSize',16)
 set(gca,'FontName','Book Antiqua','FontSize',12) % ,'Xlim',[-0.5,7.5],'Ylim',[0,850]
+legend(["Standard level","Estimated level"],'location','northeast','FontSize',8,'NumColumns',1)
+%
+nexttile
+[time_estimate3,trajectory_smooth_estimate3]=trajectory(d_estimate,theta_estimate,lambda_estimate,time0,delta_t,Q_order(3));
+plot(time_true3,trajectory_true3,'LineStyle','-','LineWidth',1)
+hold on
+plot(time_estimate3,trajectory_smooth_estimate3,'LineStyle','-','LineWidth',1.5)
+xlabel({'Hour'},'FontSize',14)
+ylabel(['Inventory level'],'FontSize',14)
+title({'Order quantity Q=360'},'FontSize',16)
+set(gca,'FontName','Book Antiqua','FontSize',12) % ,'Xlim',[-0.5,7.5],'Ylim',[0,850]
+legend(["Standard level","Estimated level"],'location','northeast','FontSize',8,'NumColumns',1)
+%
+nexttile
+[time_estimate4,trajectory_smooth_estimate4]=trajectory(d_estimate,theta_estimate,lambda_estimate,time0,delta_t,Q_order(4));
+plot(time_true4,trajectory_true4,'LineStyle','-','LineWidth',1)
+hold on
+plot(time_estimate4,trajectory_smooth_estimate4,'LineStyle','-','LineWidth',1.5)
+xlabel({'Hour'},'FontSize',14)
+ylabel(['Inventory level'],'FontSize',14)
+title({'Order quantity Q=360'},'FontSize',16)
+set(gca,'FontName','Book Antiqua','FontSize',12) % ,'Xlim',[-0.5,7.5],'Ylim',[0,850]
+legend(["Standard level","Fitted level"],'location','northeast','FontSize',8,'NumColumns',1)
 % save figure
-savefig(gcf,'.\figure\case2_optimization.fig')
+savefig(gcf,'.\figure\case2_fitted_level.fig');
+exportgraphics(gcf,'.\figure\case2_fitted_level.pdf')
+%%
+save(".\data\parameter2.mat","d","lambda","theta","d_estimate","lambda_estimate","theta_estimate")
 
 

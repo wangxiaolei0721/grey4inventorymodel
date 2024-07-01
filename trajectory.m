@@ -1,4 +1,4 @@
-function [time,trajectory] = trajectory(theta,d,lambda,time0,delta_t,Q)
+function [time,trajectory] = trajectory(d,theta,lambda,time0,delta_t,Q)
 % generate the trajectory of inventory levels
 % input parameter:
 % theta: deteriorating rate
@@ -13,7 +13,7 @@ function [time,trajectory] = trajectory(theta,d,lambda,time0,delta_t,Q)
 
 
 % calculate order cycle based on order quantity
-T=Q2T(theta,d,lambda,Q);
+T=Q2T(d,theta,lambda,Q);
 % the moment when the inventory drops to 0
 tT=time0+T;
 % generate sampling time with time resolution as the step size
@@ -21,11 +21,11 @@ time=[time0:delta_t:tT]';
 % two case
 if theta == lambda
     % if theta == lambda
-    trajectory=d*exp(-theta*(time-time0)).*(tT-time);
+    trajectory=d*exp(-theta.*(time-time0)).*(tT-time);
 else
     % when theta != lambda
     par=d/(theta-lambda);
-    trajectory=par*(exp(theta*(tT-time)-lambda*T)-exp(-lambda*(time-time0)));
+    trajectory=par*(exp(theta.*(tT-time)-lambda*T)-exp(-lambda.*(time-time0)));
 end
 
 end

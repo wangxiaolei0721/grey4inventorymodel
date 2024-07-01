@@ -1,5 +1,5 @@
-function profit = profit(d,theta,lambda,p,c,h,A,T)
-% profit function
+function profit = profit_appro(d,theta,lambda,p,c,h,A,T)
+% compute profit
 % input parameter:
 % d: basic demand
 % theta: quantity deteriorating rate
@@ -16,15 +16,12 @@ function profit = profit(d,theta,lambda,p,c,h,A,T)
 % two case
 if theta == lambda
     % if theta == lambda
-    par1=d*(p*lambda+h)/(lambda^2);
-    par2=d*(c*lambda+h)/lambda;
-    profit=par1*(1-exp(-lambda*T))./T-par2-A./T;
+    profit=d*(p-c)-d*(p*lambda+h).*T/2-A./T;
 else
     % when theta != lambda
-    par1=d*(p*theta+h)/(theta*lambda);
-    par2=d*(c*theta+h)/(theta*(theta-lambda));
-    profit=par1*(1-exp(-lambda.*T))./T-par2*(exp((theta-lambda).*T)-1)./T-A./T;
+    par=d*((c*theta+h)+lambda*(p-c));
+    profit=d*(p-c)-par.*T/2-A./T;
 end
 
-
 end
+

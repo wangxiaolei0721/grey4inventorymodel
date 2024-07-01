@@ -1,4 +1,4 @@
-function Q = T2Q(theta,d,lambda,T)
+function Q = T2Q(d,theta,lambda,T)
 % T to Q: from order cycle to order quantity
 % input parameter:
 % theta: deteriorating rate
@@ -19,3 +19,4 @@ else
     Q=par*(exp((theta-lambda)*T)-1);
 end
 
+end
