@@ -1,5 +1,5 @@
-function residual = lambda_residual_multiQ(t0,time_train,level_diff_train,level_train,lambdaeqtheta,lambda)
-% residual function of lambda under multiple orders
+function estimation = lambda2par(t0,time_train,level_diff_train,level_train,lambdaeqtheta,lambda)
+% calculate the initial values of alpha and beta based on theta
 % input parameter:
 % t0: the time of order arrival
 % time_train: the sample time
@@ -30,6 +30,7 @@ for i = 1:cell_length
     L_j=[L_j;level_i(2:end)];
     % demand term
     E_i=exp(-lambda.*(time_i_j-t0))+exp(-lambda.*(time_i_j1-t0));
+    % E_i=lambda\(exp(-lambda.*(time_i_j-t0))-exp(-lambda.*(time_i_j1-t0)));
     E=[E;E_i];
 end
 if lambdaeqtheta
@@ -37,23 +38,18 @@ if lambdaeqtheta
     Y=l + 2\lambda*(L_j1+L_j).*delta_T;
     % data matrix for parameter estimation
     H_lambda=-2\E.*delta_T;
+    % H_lambda=E;
     % estimates
-    d_estimation = (H_lambda'*H_lambda)\H_lambda'*Y;
-    % estimate of first derivative
-    level_diff_estimation=H_lambda*d_estimation;
-    % computing residual
-    residual=Y-level_diff_estimation;
+    estimation = (H_lambda'*H_lambda)\H_lambda'*Y;
 else
     % X: vector of dependent variable
     Y=l;
     % data matrix for parameter estimation
     H_lambda=[-2\(L_j1+L_j).*delta_T,-2\E.*delta_T];
+    % H_lambda=[-2\(L_j1+L_j).*delta_T,E];
     % estimates
-    Xi_estimation = (H_lambda'*H_lambda)\H_lambda'*Y;
-    % estimate of first derivative
-    level_diff_estimation=H_lambda*Xi_estimation;
-    % computing residual
-    residual=Y-level_diff_estimation;
+    estimation = (H_lambda'*H_lambda)\H_lambda'*Y;
 end
+
 end
 

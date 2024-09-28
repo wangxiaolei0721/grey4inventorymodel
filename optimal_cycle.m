@@ -1,8 +1,8 @@
-function T = optimal_cycle(d,theta,lambda,p,c,h,A,T_interval)
-% compute profit
+function T = optimal_cycle(theta,d,lambda,p,c,h,A,T_interval)
+% compute optimal cycle
 % input parameter:
+% theta: quantity decay rate
 % d: basic demand
-% theta: quantity deteriorating rate
 % lambda: quality decay rate
 % p: sales price
 % c: production cost
@@ -10,7 +10,7 @@ function T = optimal_cycle(d,theta,lambda,p,c,h,A,T_interval)
 % A: ordering cost per cycle
 % T_interval: interval of T
 % output parameter:
-% T: optimal order cycles
+% T: optimal order cycle
 
 
 syms T;

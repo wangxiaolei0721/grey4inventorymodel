@@ -1,9 +1,9 @@
-function T = Q2T(d,theta,lambda,Q)
+function T = Q2T(theta,d,lambda,Q)
 % Q to T: from order quantity to order cycle
 % input parameter:
-% theta: deteriorating rate
-% d: initial demand
-% lambda: a parameter governing the decreasing rate of the demand
+% theta: quantity decay rate
+% d: basic demand
+% lambda: quality decay rate
 % Q: the order quantity
 % output parameter:
 % T: order cycle

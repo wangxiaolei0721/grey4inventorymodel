@@ -1,14 +1,14 @@
-function profit = profit(d,theta,lambda,p,c,h,A,T)
+function profit = profit(theta,d,lambda,p,c,h,A,T)
 % profit function
 % input parameter:
+% theta: quantity decay rate
 % d: basic demand
-% theta: quantity deteriorating rate
 % lambda: quality decay rate
 % p: sales price
 % c: production cost
 % h: holding cost per unit per unit of time
 % A: ordering cost per cycle
-% T: order cycles
+% T: order cycle
 % output parameter:
 % profit: total profits at T
 
