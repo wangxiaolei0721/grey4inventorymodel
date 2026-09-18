@@ -1,12 +1,11 @@
-function residual = lambda_residual_multiQ(t0,time_train,level_diff_train,level_train,lambdaeqtheta,lambda)
+function residual = lambda_residual_multiQ(t0,time_train,level_diff_train,level_train,lambda)
 % residual function of lambda under multiple orders
 % input parameter:
 % t0: the time of order arrival
 % time_train: the sample time
 % Q_vector_train: order quantity vector
 % level_diff_train: level changes
-% lambdaeqtheta:lambda=theta, 1 is TRUE, 0 is FALSE
-% lambda: quality decay rate
+% lambda: decay rate
 % output parameter
 % residual: residual vector of derivative
 
@@ -32,28 +31,15 @@ for i = 1:cell_length
     E_i=exp(-lambda.*(time_i_j-t0))+exp(-lambda.*(time_i_j1-t0));
     E=[E;E_i];
 end
-if lambdaeqtheta
-    % X: vector of dependent variable
-    Y=l + 2\lambda*(L_j1+L_j).*delta_T;
-    % data matrix for parameter estimation
-    H_lambda=-2\E.*delta_T;
-    % estimates
-    d_estimation = (H_lambda'*H_lambda)\H_lambda'*Y;
-    % estimate of first derivative
-    level_diff_estimation=H_lambda*d_estimation;
-    % computing residual
-    residual=Y-level_diff_estimation;
-else
-    % X: vector of dependent variable
-    Y=l;
-    % data matrix for parameter estimation
-    H_lambda=[-2\(L_j1+L_j).*delta_T,-2\E.*delta_T];
-    % estimates
-    Xi_estimation = (H_lambda'*H_lambda)\H_lambda'*Y;
-    % estimate of first derivative
-    level_diff_estimation=H_lambda*Xi_estimation;
-    % computing residual
-    residual=Y-level_diff_estimation;
-end
+% X: vector of dependent variable
+Y=l + 2\lambda*(L_j1+L_j).*delta_T;
+% data matrix for parameter estimation
+H_lambda=-2\E.*delta_T;
+% estimates
+d_estimation = (H_lambda'*H_lambda)\H_lambda'*Y;
+% estimate of first derivative
+level_diff_estimation=H_lambda*d_estimation;
+% computing residual
+residual=Y-level_diff_estimation;
 end
 

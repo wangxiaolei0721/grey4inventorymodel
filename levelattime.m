@@ -1,9 +1,8 @@
-function level = levelattime(theta,d,lambda,t0,Q,time)
+function level = levelattime(lambda,d,t0,Q,time)
 % calculate inventory levels at a specific time
 % input parameter:
-% theta: quantity decay rate
+% lambda: decay rate
 % d: basic demand
-% lambda: quality decay rate
 % t0: the time of order arrival
 % Q: the order quantity
 % time: the time to be evaluated
@@ -12,17 +11,9 @@ function level = levelattime(theta,d,lambda,t0,Q,time)
 
 
 % calculate order cycle based on order quantity
-T=Q2T(theta,d,lambda,Q);
+T=Q/d;
 % the moment when the inventory drops to 0
 tT=t0+T;
-% two case
-if theta == lambda
-    % if theta == lambda
-    level=d*exp(-lambda*(time-t0)).*(tT-time);
-else
-    % when theta != lambda
-    T=tT-t0;
-    par=d/(theta-lambda);
-    level=par*(exp(theta*(tT-time)-lambda*T)-exp(-lambda*(time-t0)));
+level=d*exp(-lambda*(time-t0)).*(tT-time);
 end
 

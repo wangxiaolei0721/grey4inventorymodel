@@ -1,9 +1,8 @@
-function [time_simu,level_diff_simu,level_simu] = inventory_level_simulation(theta,d,lambda,t0,delta_t,Q)
+function [time_simu,level_diff_simu,level_simu] = inventory_level_simulation(lambda,d,t0,delta_t,Q)
 % simulate the trajectory of inventory levels
 % input parameter:
-% theta: quantity decay rate
+% lambda: decay rate
 % d: basic demand
-% lambda: quality decay rate
 % t0: the time of order arrival
 % delta_t: the time resolution
 % Q: the order quantity
@@ -27,8 +26,8 @@ time_k=time_k1+delta_t;
 % demand = -lambda\d*(exp(-lambda.*(time_k-t0))-exp(-lambda.*(time_k1-t0)));
 demand = d*(0.5*exp(-lambda.*(time_k-t0))+0.5*exp(-lambda.*(time_k1-t0)));
 % deteriorating quantity
-deterioration=theta*(0.5*levelattime(theta,d,lambda,t0,Q,time_k) ...
-    +0.5*levelattime(theta,d,lambda,t0,Q,time_k1));
+deterioration=lambda*(0.5*levelattime(lambda,d,t0,Q,time_k) ...
+    +0.5*levelattime(lambda,d,t0,Q,time_k1));
 % reduction expectation
 reduction_expectation = delta_t*(deterioration+demand);
 % random reduction
@@ -48,8 +47,8 @@ while level_remain > 0
     % demand quantity
     demand = d*(0.5*exp(-lambda.*(time_k-t0))+0.5*exp(-lambda.*(time_k1-t0)));
     % deteriorating quantity
-    deterioration=theta*(0.5*levelattime(theta,d,lambda,t0,Q,time_k) ...
-        +0.5*levelattime(theta,d,lambda,t0,Q,time_k1));
+    deterioration=lambda*(0.5*levelattime(lambda,d,t0,Q,time_k) ...
+    +0.5*levelattime(lambda,d,t0,Q,time_k1));
     % reduction expectation
     reduction_expectation = delta_t*(deterioration+demand);
     % random reduction
